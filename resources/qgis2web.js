@@ -27,12 +27,12 @@ var map = new ol.Map({
     overlays: [overlayPopup],
     layers: layersList,
     view: new ol.View({
-         maxZoom: 28, minZoom: 1
+         maxZoom: 23, minZoom: 1
     })
 });
 
 
-map.getView().fit([13043488.433855, -51762.548875, 13044607.912167, -51025.331451], map.getSize());
+map.getView().fit([13043664.095112, -51577.586128, 13044360.724076, -51179.512435], map.getSize());
 
 var NO_POPUP = 0
 var ALL_FIELDS = 1
@@ -76,6 +76,7 @@ var doHighlight = false;
 var doHover = false;
 
 var highlight;
+var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 var onPointerMove = function(evt) {
     if (!doHover && !doHighlight) {
         return;
@@ -123,7 +124,7 @@ var onPointerMove = function(evt) {
                                 popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                             }
                             if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
-                                popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(clusterFeature.get(currentFeatureKeys[i]).toLocaleString(), {truncate: {length: 30, location: 'smart'}}) + '</td>' : '');
+                                popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? autolinker.link(clusterFeature.get(currentFeatureKeys[i]).toLocaleString()) + '</td>' : '');
                             } else {
                                 popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                             }
@@ -149,7 +150,7 @@ var onPointerMove = function(evt) {
                             popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                         }
                         if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
-                            popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString(), {truncate: {length: 30, location: 'smart'}}) + '</td>' : '');
+                            popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString()) + '</td>' : '');
                         } else {
                             popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                         }
@@ -266,7 +267,7 @@ var onSingleClick = function(evt) {
                                     popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                                 }
                                 if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
-                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(clusterFeature.get(currentFeatureKeys[i]).toLocaleString(), {truncate: {length: 30, location: 'smart'}}) + '</td>' : '');
+                                    popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? autolinker.link(clusterFeature.get(currentFeatureKeys[i]).toLocaleString()) + '</td>' : '');
                                 } else {
                                     popupField += (clusterFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + clusterFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                                 }
@@ -292,7 +293,7 @@ var onSingleClick = function(evt) {
                                 popupField += '<strong>' + layer.get('fieldAliases')[currentFeatureKeys[i]] + ':</strong><br />';
                             }
                             if (layer.get('fieldImages')[currentFeatureKeys[i]] != "ExternalResource") {
-                                popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? Autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString(), {truncate: {length: 30, location: 'smart'}}) + '</td>' : '');
+                                popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? autolinker.link(currentFeature.get(currentFeatureKeys[i]).toLocaleString()) + '</td>' : '');
                             } else {
                                 popupField += (currentFeature.get(currentFeatureKeys[i]) != null ? '<img src="images/' + currentFeature.get(currentFeatureKeys[i]).replace(/[\\\/:]/g, '_').trim()  + '" /></td>' : '');
                             }
@@ -346,17 +347,6 @@ map.on('singleclick', function(evt) {
 
 
 
-
-var geocoder = new Geocoder('nominatim', {
-  provider: 'osm',
-  lang: 'en-US',
-  placeholder: 'Search for ...',
-  limit: 5,
-  keepOpen: true
-});
-map.addControl(geocoder);
-
-document.getElementsByClassName('gcd-gl-btn')[0].className += ' fa fa-search';
 
 var attributionComplete = false;
 map.on("rendercomplete", function(evt) {
